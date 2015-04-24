@@ -1,0 +1,6 @@
+module DScript
+  DFLOW_URL=""
+  DFLOW_API_KEY=""
+  DFILE_URL=""
+  DFILE_API_KEY=""
+end

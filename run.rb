@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 require 'rbconfig'
+require 'bundler'
 require 'pathname'
 THIS_FILE = File.expand_path(__FILE__)
 RUBY = File.join(RbConfig::CONFIG['bindir'], RbConfig::CONFIG['ruby_install_name'])
