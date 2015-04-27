@@ -129,12 +129,43 @@ describe ImportPackageMetadata::Image do
       it "should invalidate object" do
 
         stub_request(:get, 'http://localhost:3001'+'/download_file')
-        .with(query: {source_file: "PACKAGING:/1/page_metadata/0001.xml", api_key: @dfile_api_key})
-        .to_return(:body => File.new('processes/import_package_metadata/spec/stubs/0001.xml'), :status => 200)
+        .with(query: {source_file: "PACKAGING:/999/page_metadata/0001.xml", api_key: @dfile_api_key})
+        .to_return(:body => File.new('processes/import_package_metadata/spec/stubs/no-data.xml'), :status => 200)
 
-        image = ImportPackageMetadata::Image.new(dfile_api: @dfile_api, job_id: 1, group_names: [], image_count: 10, image_num: 1)
+        image = ImportPackageMetadata::Image.new(dfile_api: @dfile_api, job_id: 999, group_names: [], image_count: 10, image_num: 1)
 
         expect{image.fetch_metadata}.to raise_error StandardError
+      end
+    end
+  end
+
+  describe "run" do
+
+    context "for a valid image" do
+      it "should return a valid object" do
+        stub_request(:get, 'http://localhost:3001'+'/download_file')
+        .with(query: {source_file: "PACKAGING:/1/page_metadata/0003.xml", api_key: @dfile_api_key})
+        .to_return(:body => File.new('processes/import_package_metadata/spec/stubs/0003.xml'), :status => 200)
+
+        image = ImportPackageMetadata::Image.new(dfile_api: @dfile_api, job_id: 1, group_names: [], image_count: 10, image_num: 3)
+
+        image.run
+
+        expect(image.physical).to eq 'LeftPage'
+        expect(image.logical).to eq 'TitlePage'
+      end
+    end
+
+    context "for an invalid message" do
+      it "should raise an error" do
+        stub_request(:get, 'http://localhost:3001'+'/download_file')
+        .with(query: {source_file: "PACKAGING:/999/page_metadata/0001.xml", api_key: @dfile_api_key})
+        .to_return(:body => File.new('processes/import_package_metadata/spec/stubs/no-data.xml'), :status => 200)
+
+        image = ImportPackageMetadata::Image.new(dfile_api: @dfile_api, job_id: 999, group_names: [], image_count: 10, image_num: 1)
+
+        expect{image.run}.not_to raise_error
+        expect(image.error[:code]).not_to be nil
       end
     end
   end

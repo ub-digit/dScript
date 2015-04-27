@@ -2,8 +2,8 @@ require 'nokogiri'
 
 module ImportPackageMetadata
   class Image
-    attr_accessor :physical, :logical
-    
+    attr_accessor :physical, :logical, :error
+
     PHYSICAL = {
       1 => "LeftPage",
       2 => "RightPage",
@@ -128,21 +128,26 @@ module ImportPackageMetadata
   class Images
     attr_accessor :page_count, :images
 
-    def initialize(dfile_api, job)
+    def initialize(dfile_api: dfile_api, job: job)
       @dfile_api = dfile_api
       @images = []
       @job = job
+    end
+
+    def run
       fetch_page_count
       extract_group_names
       fetch_images
     end
     
+    # Retrieves page count from text file for job
     def fetch_page_count
       page_count_data = @dfile_api.download_file("PACKAGING", 
         "/#{@job['id']}/page_count/#{@job['id']}.txt")
       @page_count = page_count_data.to_i
     end
 
+    # Extracts valid group names from job xml
     def extract_group_names
       doc = Nokogiri::XML(@job['xml'])
       @group_names = []
@@ -151,9 +156,10 @@ module ImportPackageMetadata
       end
     end
 
+    # Creates image objects for each page number
     def fetch_images
       @page_count.times do |page_num| 
-        @images << Image.new(@dfile_api, @job['id'], @group_names, @page_count, page_num+1)
+        @images << Image.new(dfile_api: @dfile_api, job_id: @job['id'], group_names: @group_names, image_count: @page_count, image_num: page_num+1)
       end
     end
   end
