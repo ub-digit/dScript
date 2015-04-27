@@ -1,5 +1,9 @@
+require 'nokogiri'
+
 module ImportPackageMetadata
   class Image
+    attr_accessor :physical, :logical
+    
     PHYSICAL = {
       1 => "LeftPage",
       2 => "RightPage",
@@ -49,15 +53,17 @@ module ImportPackageMetadata
       image_name = sprintf("%04d.xml", @image_num)
       image_data = @dfile_api.download_file("PACKAGING", 
         "/#{@job_id}/page_metadata/#{image_name}")
+      
       doc = Nokogiri::XML(image_data)
       pos = doc.search("/ParametersPage/position")
       physical_numeric = pos.search("bookside").text.to_i
       logical_numeric = pos.search("pageContent").text.to_i
       group_name = doc.search("/ParametersPage/groupName").text.to_i
       
-      @physical = map_physical(physical_numeric)
-      @logical = map_logical(logical_numeric)
-      validate_group_name(group_name)
+      @physical = map_physical(physical_numeric: physical_numeric)
+      @logical = map_logical(logical_numeric: logical_numeric)
+      
+      validate_group_name(group_name: group_name) unless group_name == 0
       @group_name = group_name
     end
 

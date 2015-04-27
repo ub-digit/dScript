@@ -23,12 +23,12 @@ module DScript
    # TODO: Needs error handling
    def download_file(source, filename)
      # Returns a job to process, if any is available
-     file_data = HTTParty.get("#{@host}/download_file", query: {
+     response = HTTParty.get("#{@host}/download_file", query: {
        source_file: "#{source}:#{filename}",
        api_key: @api_key
      })
      
-     return file_data
+     return response.body
    end
 	end
 end

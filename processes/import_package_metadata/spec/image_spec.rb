@@ -1,4 +1,5 @@
 require_relative '../image.rb'
+#require 'webmock'
 require 'webmock/rspec'
 require_relative '../../../helpers/dscript_helper.rb'
 require_relative '../../../helpers/dfile_api.rb'
@@ -109,10 +110,10 @@ describe ImportPackageMetadata::Image do
   describe "fetch_metadata" do
 
     context "for an image with type LeftPage and content TitlePage" do
-      it "should set physical to 'LeftPage'" do
+      it "should set physical to 'LeftPage' and logical to 'TitlePage'" do
 
         stub_request(:get, 'http://localhost:3001'+'/download_file')
-        .with(query: {source_file: "PACKAGING:/1/page_metadata/0003.xml", api_key: @api_key})
+        .with(query: {source_file: "PACKAGING:/1/page_metadata/0003.xml", api_key: @dfile_api_key})
         .to_return(:body => File.new('processes/import_package_metadata/spec/stubs/0003.xml'), :status => 200)
 
         image = ImportPackageMetadata::Image.new(dfile_api: @dfile_api, job_id: 1, group_names: [], image_count: 10, image_num: 3)
@@ -120,6 +121,20 @@ describe ImportPackageMetadata::Image do
         image.fetch_metadata
 
         expect(image.physical).to eq 'LeftPage'
+        expect(image.logical).to eq 'TitlePage'
+      end
+    end
+
+    context "for an image without page type" do
+      it "should invalidate object" do
+
+        stub_request(:get, 'http://localhost:3001'+'/download_file')
+        .with(query: {source_file: "PACKAGING:/1/page_metadata/0001.xml", api_key: @dfile_api_key})
+        .to_return(:body => File.new('processes/import_package_metadata/spec/stubs/0001.xml'), :status => 200)
+
+        image = ImportPackageMetadata::Image.new(dfile_api: @dfile_api, job_id: 1, group_names: [], image_count: 10, image_num: 1)
+
+        expect{image.fetch_metadata}.to raise_error StandardError
       end
     end
   end
