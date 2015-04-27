@@ -1,0 +1,4 @@
+module CreateMETSPackage
+  CREATOR_NAME = "Generic University"
+  CREATOR_SIGEL = "Genuni"
+end
