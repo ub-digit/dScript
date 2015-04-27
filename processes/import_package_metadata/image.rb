@@ -41,8 +41,9 @@ module ImportPackageMetadata
 
     # Fetch XML metadata for image and extract relevant information
     def fetch_metadata
+      image_name = sprintf("%04d.xml", @job_id)
       image_data = @dfile_api.download_file("PACKAGING", 
-        "/#{@job_id}/page_metadata/#{@job_id}.xml")
+        "/#{@job_id}/page_metadata/#{image_name}")
       doc = Nokogiri::XML(image_data)
       pos = doc.search("/ParametersPage/position")
       physical_numeric = pos.search("bookside").text.to_i
