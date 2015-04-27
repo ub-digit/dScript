@@ -18,16 +18,21 @@ module ImportPackageMetadata
       32 => "EmptyPage"
     }
 
-    def initialize(dfile_api, job_id, group_names, image_count, image_num)
+    def initialize(dfile_api:, job_id:, group_names:, image_count:, image_num:)
       @dfile_api = dfile_api
       @job_id = job_id
       @group_names = group_names
       @image_count = image_count
       @image_num = image_num
       @error = {}
+    end
+
+    # Executes model
+    def run
       begin
         fetch_metadata
-      rescue ImageAbort
+      rescue StandardError => e
+        #@error[:msg] = e.msg
         if @error.empty?
           @error[:code] = "IMAGE_ERROR_UNKNOWN"
           @error[:msg] = "Unknown Image error"
@@ -41,7 +46,7 @@ module ImportPackageMetadata
 
     # Fetch XML metadata for image and extract relevant information
     def fetch_metadata
-      image_name = sprintf("%04d.xml", @job_id)
+      image_name = sprintf("%04d.xml", @image_num)
       image_data = @dfile_api.download_file("PACKAGING", 
         "/#{@job_id}/page_metadata/#{image_name}")
       doc = Nokogiri::XML(image_data)
@@ -66,7 +71,7 @@ module ImportPackageMetadata
     # Page N-1 => BackCoverInside
     # Page N => BackCoverOutside
     # Any other page, not allowed as cover...
-    def map_physical(physical_numeric)
+    def map_physical(physical_numeric:)
       physical = PHYSICAL[physical_numeric]
       if physical == "BookCover"
         case @image_num
@@ -80,32 +85,36 @@ module ImportPackageMetadata
           physical = "BackCoverOutside"
         else
           physical = "Undefined"
+          @error ||= {}
           @error[:code] = "IMAGE_COVER_ERROR"
           @error[:msg] = "Cover not in proper place: #{@image_num}"
-          raise ImageAbort
+          raise StandardError, "Cover not in proper place: #{@image_num}"
         end
       end
       if !physical
         physical = "Undefined" 
+        @error ||= {}
         @error[:code] = "IMAGE_PHYSICAL_ERROR"
         @error[:msg] = "Image missing physical page definition: #{@image_num}"
-        raise ImageAbort
+        raise StandardError, "Image missing physical page definition: #{@image_num}"
       end
       physical
     end
 
     # Remap logical page definition from numeric to string
-    def map_logical(logical_numeric)
+    def map_logical(logical_numeric:)
       logical = LOGICAL[logical_numeric]
       logical = "Undefined" if !logical
       logical
     end
 
-    def validate_group_name(group_name)
+    def validate_group_name(group_name:)
       if !@group_names.include?(group_name)
         @error[:code] = "IMAGE_GROUP_NAME_ERROR"
         @error[:msg] = "Image group name missing: #{@image_num}"
-        raise ImageAbort
+        raise StandardError, "Image group name missing: #{@image_num}"
+      else
+        return true
       end
     end
   end
