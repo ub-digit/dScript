@@ -42,7 +42,7 @@ module ImportPackageMetadata
     # Fetch XML metadata for image and extract relevant information
     def fetch_metadata
       image_data = @dfile_api.download_file("PACKAGING", 
-        "/#{@job_id}/page_metadata/#{@job_id}")
+        "/#{@job_id}/page_metadata/#{@job_id}.xml")
       doc = Nokogiri::XML(image_data)
       pos = doc.search("/ParametersPage/position")
       physical_numeric = pos.search("bookside").text.to_i
@@ -123,7 +123,7 @@ module ImportPackageMetadata
     
     def fetch_page_count
       page_count_data = @dfile_api.download_file("PACKAGING", 
-        "/#{@job['id']}/page_count/#{@job['id']}")
+        "/#{@job['id']}/page_count/#{@job['id']}.txt")
       @page_count = page_count_data.to_i
     end
 
