@@ -2,7 +2,6 @@ require 'httparty'
 
 module DScript
 	class DFileAPI
-
    def initialize(helper, process_code)
      @host = DScript::DFILE_URL
      @api_key = DScript::DFILE_API_KEY
@@ -24,6 +23,46 @@ module DScript
    def download_file(source, filename)
      # Returns a job to process, if any is available
      response = HTTParty.get("#{@host}/download_file", query: {
+       source_file: "#{source}:#{filename}",
+       api_key: @api_key
+     })
+     
+     return response.body
+   end
+
+   # TODO: Needs error handling
+   # Returns array of {:name, :size}
+   # :name == basename
+   def list_files(source, directory, extension)
+     # Returns a job to process, if any is available
+     response = HTTParty.get("#{@host}/list_files", query: {
+       source: "#{source}:#{filename}",
+       ext: extension,
+       api_key: @api_key
+     })
+     
+     return response.body
+   end
+
+   # TODO: Needs error handling
+   # Returns array of {:name, :size}
+   # :name == basename
+   def move_file(from_source, from_file, to_source, to_file)
+     # Returns a job to process, if any is available
+     response = HTTParty.get("#{@host}/list_files", query: {
+       source_file: "#{from_source}:#{from_file}",
+       dest_file: "#{to_source}:#{to_file}",
+       api_key: @api_key
+     })
+     
+     return response.body
+   end
+
+   # TODO: Needs error handling
+   # returns {:checksum, :msg}
+   def checksum(source, filename)
+     # Returns a job to process, if any is available
+     response = HTTParty.get("#{@host}/checksum", query: {
        source_file: "#{source}:#{filename}",
        api_key: @api_key
      })
