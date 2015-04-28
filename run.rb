@@ -33,7 +33,7 @@ script_file = Pathname.new("./processes/#{call_process}/main.rb")
 
 cmd = "#{RUBY} #{script_file.to_s}"
 IO.popen(cmd).each do |subprocess|
-	 p subprocess.chomp
+	 print subprocess
 end
 
 @sh.terminate("Script ended")

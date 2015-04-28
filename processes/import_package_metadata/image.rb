@@ -2,7 +2,15 @@ require 'nokogiri'
 
 module ImportPackageMetadata
   class Image
-    attr_accessor :physical, :logical, :error
+    attr_accessor :physical, :logical, :error, :image_num
+
+    def as_json
+      {
+        num: image_num,
+        page_type: physical,
+        page_content: logical
+      }
+    end
 
     PHYSICAL = {
       1 => "LeftPage",
@@ -126,11 +134,16 @@ module ImportPackageMetadata
   end
 
   class Images
-    attr_accessor :page_count, :images
+    attr_accessor :page_count, :images, :errors
+
+    def as_json
+      {images: images.map(&:as_json)}
+    end
 
     def initialize(dfile_api: dfile_api, job: job)
       @dfile_api = dfile_api
       @images = []
+      @errors = []
       @job = job
     end
 
@@ -159,8 +172,20 @@ module ImportPackageMetadata
     # Creates image objects for each page number
     def fetch_images
       @page_count.times do |page_num| 
-        @images << Image.new(dfile_api: @dfile_api, job_id: @job['id'], group_names: @group_names, image_count: @page_count, image_num: page_num+1)
+        image = Image.new(dfile_api: @dfile_api, job_id: @job['id'], group_names: @group_names, image_count: @page_count, image_num: page_num+1)
+        image.run
+        @images << image
       end
+    end
+
+    def valid?
+      @images.each do |image|
+        if !image.valid?
+          @errors << image.error
+          return false
+        end
+      end
+      return true
     end
   end
 end
