@@ -4,3 +4,4 @@ gem "httparty"
 gem "nokogiri"
 gem 'rspec'
 gem 'webmock'
+gem 'spreadsheet'

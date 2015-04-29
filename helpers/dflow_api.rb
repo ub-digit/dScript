@@ -51,9 +51,26 @@ module DScript
 
    # Updates a job with new information
    def update_job(job:)
-      response = HTTParty.put("#{@host}/api/jobs/#{job[:id]}", body: {job: job, api_key: @api_key})
-      
-      return response.success?
+     response = HTTParty.put("#{@host}/api/jobs/#{job[:id]}", body: {job: job, api_key: @api_key})
+     
+     return response.success?
+   end
+
+   # Create a new job
+   def create_job(job:)
+     response = HTTParty.post("#{@host}/api/jobs", body: {job: job, api_key: @api_key})
+     
+     return response
+   end
+
+   # Fetch source data for catalog id
+   def get_source_data(source_name:, catalog_id:)
+     response = HTTParty.get("#{@host}/api/sources/#{source_name}", query: {
+       catalog_id: catalog_id,
+       api_key: @api_key
+     })
+     
+     return response["source"]
    end
 
 	end
