@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:marc="http://www.loc.gov/MARC21/slim" exclude-result-prefixes="xs marc">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:marc="http://www.loc.gov/MARC21/slim" exclude-result-prefixes="xs marc">
 	<xsl:include href="MARC21slimUtils.xsl"/>
 	<xsl:output method="xml" indent="yes" encoding="UTF-8" omit-xml-declaration="yes" media-type="text/xml"/>
 	<!-- sigel = Libris-sigel -->

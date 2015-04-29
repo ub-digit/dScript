@@ -23,7 +23,7 @@ images.run
 
 if images.valid?
   # Store metadata information to job
-  new_job = {id: @job['id'], package_metadata: {images: images.as_json}.to_json}
+  new_job = {id: @job['id'], package_metadata: {images: images.images.map(&:as_json), image_count: images.images.size}.to_json}
   @dflow_api.update_job(job: new_job)
 
   # Update progress

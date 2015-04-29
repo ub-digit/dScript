@@ -1,3 +1,5 @@
+require 'nokogiri'
+
 module CreateMETSPackage
   class Libris
     TYPE_OF_RECORD = {
@@ -40,13 +42,13 @@ module CreateMETSPackage
     end
 
     # Libris does not use image groups, so this returns a simple empty string
-    def dmdid_attribute
+    def dmdid_attribute(groupname)
       ""
     end
 
     # XSLT template for transforming Libris MARCXML to ALVIN-MODS
     def alvin_xslt
-      Nokogiri::XSLT(File.open("assets/LibrisToAlvin.xsl", "rb"))
+      Nokogiri::XSLT(File.open("processes/create_mets_package/assets/LibrisToAlvin.xsl", "rb"))
     end
 
     # Use above template to do transformation
@@ -103,9 +105,9 @@ module CreateMETSPackage
 
     # Returns an ordinal array for given key
     def seq_metadata_num(name, num)
-      key = metadata_value("#{name}_#{num}_key")
-      value = metadata_value("#{name}_#{num}_value")
-      return nil if key.blank? || value.blank?
+      key = @job['metadata']["#{name}_#{num}_key"]
+      value = @job['metadata']["#{name}_#{num}_value"]
+      return nil if key.nil? || key.empty? || value.nil? || value.empty?
       [key, value]
     end
   end

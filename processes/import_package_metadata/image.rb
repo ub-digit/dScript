@@ -134,11 +134,11 @@ module ImportPackageMetadata
   end
 
   class Images
-    attr_accessor :page_count, :images, :errors
+    attr_accessor :page_count, :images, :errors, :images
 
-    def as_json
-      {images: images.map(&:as_json)}
-    end
+    #def as_json
+    #  {images: images.map(&:as_json)}
+    #end
 
     def initialize(dfile_api: dfile_api, job: job)
       @dfile_api = dfile_api
