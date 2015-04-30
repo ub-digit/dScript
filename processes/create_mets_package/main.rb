@@ -22,6 +22,7 @@ PROCESS_CODE = "CREATE_METS_PACKAGE"
 begin
   mets = CreateMETSPackage::METS.new(dfile_api: @dfile_api, job: @job)
   mets.create_mets_xml_file
+  mets.move_metadata_folders
   mets.move_mets_package
 rescue StandardError => e
   @sh.terminate(e.message)

@@ -5,3 +5,4 @@ gem "nokogiri"
 gem 'rspec'
 gem 'webmock'
 gem 'spreadsheet'
+gem 'capistrano'

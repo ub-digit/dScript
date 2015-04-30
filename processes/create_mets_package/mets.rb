@@ -117,6 +117,17 @@ module CreateMETSPackage
       end
     end
 
+    # Moves metadata folders to backup folder outside of mets package
+    def move_metadata_folders
+      if !@dfile_api.move_folder(from_source: "PACKAGING", from_dir: @job['id'].to_s + "/page_metadata", to_source: "PACKAGING", to_dir: "metadata/" + mets_data[:id] + "/page_metadata")
+        raise StandardError, "Could not move mets folder to store for job: #{@job['id']}"
+      end
+
+      if !@dfile_api.move_folder(from_source: "PACKAGING", from_dir: @job['id'].to_s + "/page_count", to_source: "PACKAGING", to_dir: "metadata/" + mets_data[:id] + "/page_count")
+        raise StandardError, "Could not move mets folder to store for job: #{@job['id']}"
+      end
+    end
+
     # Collect global data used by METS production in various places
     def mets_data
       {

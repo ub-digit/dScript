@@ -10,4 +10,7 @@ config.rb
 \#*#
 .#*
 
+# Ignore deploy config files
+config/deploy/*.rb
+
 
