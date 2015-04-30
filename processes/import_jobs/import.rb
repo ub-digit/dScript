@@ -17,30 +17,42 @@ module ImportJobs
       @catalog_id = @file_data["catalog_id"]
       @file_data.delete("name")
       @file_data.delete("catalog_id")
+      @full_data_generated = false
     end
 
     # Generate a complete job data before created
-    def full_data
+    def generate_full_data
+      return @job_data if @full_data_generated
       @job_data["name"] = @name if @name
       @job_data["metadata"] ||= {}
       @job_data["metadata"].merge!(@file_data)
       @job_data["source"] = @job_data["source_name"].dup
       @job_data.delete("source_name")
+      @full_data_generated = true
       @job_data
     end
     
     # Actually send data to dFlow
-    def create
-      job = full_data
+    def create(validate_only: false)
+      job = generate_full_data
       job["treenode_id"] = @treenode_id
       job["copyright"] = @copyright
-      @dflow_api.create_job(job: job)
+      params = {}
+      params[:validate_only] = true if validate_only
+      @dflow_api.create_job(job: job, params: params)
+    end
+
+    def invalid?
+      response = create(validate_only: true)
+      return response['error'] if response['error']
+      false
     end
   end
 
   # Importing job list from Excel file
   class Import
-    def initialize(dflow_api:, source_name:, filename:, treenode_id:, copyright:)
+    def initialize(sh: sh, dflow_api:, source_name:, filename:, treenode_id:, copyright:)
+      @sh = sh
       @dflow_api = dflow_api
       @source_name = source_name
       @treenode_id = treenode_id
@@ -82,6 +94,26 @@ module ImportJobs
       # Write source data back to job entry
       @jobs.each do |job| 
         job.job_data = @catalog_data[job.catalog_id].dup
+      end
+
+      # Validate jobs
+      jobs_validity = @jobs.map.with_index do |job,i|
+        error = job.invalid?
+        next if !error
+        [error, i]
+      end.compact
+
+      if !jobs_validity.empty?
+        puts "==============================="
+        puts "ERROR! Not all jobs were valid."
+        puts "Invalid rows in file:"
+        jobs_validity.each do |row|
+          error = row[0]
+          row_num = row[1] + 4
+          puts "Row: #{row_num}: #{error['code']} #{error['errors'].inspect}"
+        end
+        puts "==============================="
+        @sh.terminate("ERROR!Not all jobs were valid. Aborting.")
       end
       
       # Create each job in turn

@@ -57,8 +57,8 @@ module DScript
    end
 
    # Create a new job
-   def create_job(job:)
-     response = HTTParty.post("#{@host}/api/jobs", body: {job: job, api_key: @api_key})
+   def create_job(job:, params: {})
+     response = HTTParty.post("#{@host}/api/jobs", body: {job: job, api_key: @api_key}.merge(params))
      
      return response
    end
