@@ -37,7 +37,9 @@ module ImportJobs
       job = generate_full_data
       job["treenode_id"] = @treenode_id
       job["copyright"] = @copyright
-      @dflow_api.create_job(job: job, params: { validate_only: validate_only })
+      params = {}
+      params[:validate_only] = true if validate_only
+      @dflow_api.create_job(job: job, params: params)
     end
 
     def invalid?
