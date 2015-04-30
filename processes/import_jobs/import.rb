@@ -32,7 +32,7 @@ module ImportJobs
       @job_data
     end
     
-    # Actually send data to dFlow
+    # Actually create job in dFlow
     def create(validate_only: false)
       job = generate_full_data
       job["treenode_id"] = @treenode_id
@@ -42,6 +42,7 @@ module ImportJobs
       @dflow_api.create_job(job: job, params: params)
     end
 
+    # Check with dFlow if job would be valid to create or not. Return error if not valid.
     def invalid?
       response = create(validate_only: true)
       return response['error'] if response['error']
@@ -103,6 +104,7 @@ module ImportJobs
         [error, i]
       end.compact
 
+      # If any job failed validation, write a report and terminate
       if !jobs_validity.empty?
         puts "==============================="
         puts "ERROR! Not all jobs were valid."
@@ -116,7 +118,7 @@ module ImportJobs
         @sh.terminate("ERROR!Not all jobs were valid. Aborting.")
       end
       
-      # Create each job in turn
+      # Create each job in turn when everything is validated as correct
       @jobs.each.with_index do |job,i| 
         job.create
       end

@@ -22,9 +22,8 @@ def usage
   puts "\n"
   puts "Usage: import_jobs filename.xls source_name treenode_id copyright"
   puts "\n\n"
+  exit
 end
-
-pp ARGV
 
 if !ARGV[3] || ARGV[3].empty?
   usage
@@ -35,6 +34,7 @@ if !ARGV[0] || ARGV[0].empty?
   usage
 elsif !File.exist?(ARGV[0])
   puts "No such file: #{ARGV[0]}"
+  exit
 else
   @filename = ARGV[0]
 end
