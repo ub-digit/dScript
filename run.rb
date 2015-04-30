@@ -9,9 +9,11 @@ Dir["./helpers/*.rb"].each {|file| require file }
 @sh = DScript::ScriptHelper.new # Init scripthelper
 
 start_script_name = $0
+first_argv = 0
 if start_script_name == "./run.rb"
 	# If script is called for run.rb, use first argument as process_name
 	call_process = ARGV[0]
+  first_argv = 1
 else
 	# If script is called from another file, use its name as process name
 	call_process = File.basename(start_script_name)
@@ -31,7 +33,8 @@ end
 
 script_file = Pathname.new("./processes/#{call_process}/main.rb")
 
-cmd = "#{RUBY} #{script_file.to_s}"
+cmd = [RUBY, script_file.to_s]
+cmd += ARGV[first_argv..-1] if ARGV[first_argv]
 IO.popen(cmd).each do |subprocess|
 	 print subprocess
 end
