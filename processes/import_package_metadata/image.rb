@@ -125,8 +125,8 @@ module ImportPackageMetadata
     def validate_group_name(group_name:)
       if !@group_names.include?(group_name)
         @error[:code] = "IMAGE_GROUP_NAME_ERROR"
-        @error[:msg] = "Image group name missing: #{@image_num}"
-        raise StandardError, "Image group name missing: #{@image_num}"
+        @error[:msg] = "Image group name missing: #{@image_num} - #{group_name}"
+        raise StandardError, "Image group name missing: #{@image_num} - #{group_name}"
       else
         return true
       end
@@ -164,7 +164,7 @@ module ImportPackageMetadata
     def extract_group_names
       doc = Nokogiri::XML(@job['xml'])
       @group_names = []
-      doc.search('/manuscript/letter/data/imagedata').each do |imagedata|
+      doc.search('/manuscript/'+@job['source']+'/data/imagedata').each do |imagedata|
         @group_names << imagedata.attr('hd-id').to_i
       end
     end
