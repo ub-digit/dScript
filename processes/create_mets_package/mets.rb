@@ -1,6 +1,7 @@
 require_relative 'sources/libris'
 require_relative 'sources/manuscript'
 require_relative 'config'
+require 'pp'
 
 module CreateMETSPackage
 
@@ -107,6 +108,7 @@ module CreateMETSPackage
 
     def xml_valid?(xml)
       test = Nokogiri::XML(xml)
+      pp test.errors
       test.errors.empty?
     end
 
@@ -120,11 +122,11 @@ module CreateMETSPackage
     # Moves metadata folders to backup folder outside of mets package
     def move_metadata_folders
       if !@dfile_api.move_folder(from_source: "PACKAGING", from_dir: @job['id'].to_s + "/page_metadata", to_source: "PACKAGING", to_dir: "metadata/" + mets_data[:id] + "/page_metadata")
-        raise StandardError, "Could not move mets folder to store for job: #{@job['id']}"
+        raise StandardError, "Could not move page_metadata folder for job: #{@job['id']}"
       end
 
       if !@dfile_api.move_folder(from_source: "PACKAGING", from_dir: @job['id'].to_s + "/page_count", to_source: "PACKAGING", to_dir: "metadata/" + mets_data[:id] + "/page_count")
-        raise StandardError, "Could not move mets folder to store for job: #{@job['id']}"
+        raise StandardError, "Could not move page_count folder for job: #{@job['id']}"
       end
     end
 
