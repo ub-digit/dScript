@@ -108,6 +108,7 @@ module CreateMETSPackage
 
     def xml_valid?(xml)
       test = Nokogiri::XML(xml)
+      puts xml
       pp test.errors
       test.errors.empty?
     end
