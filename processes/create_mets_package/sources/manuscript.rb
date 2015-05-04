@@ -34,7 +34,7 @@ module CreateMETSPackage
       doc = Nokogiri::XML(@job['xml'])
       doc.search("/manuscript/document/data/imagedata").map do |imagedata|
         imagedata_id = imagedata.attr('hd-id').to_i
-        mets_extra_dmdsec("image_#{imagedata_id}", creation_date) { imagedata.to_xml }
+        extra_dmdsec("image_#{imagedata_id}", creation_date) { imagedata.to_xml }
       end.join("\n")
     end
     
