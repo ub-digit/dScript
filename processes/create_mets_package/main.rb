@@ -24,7 +24,9 @@ begin
   mets.create_mets_xml_file
   mets.move_metadata_folders
   mets.move_mets_package
+  @dflow_api.update_process(job_id: @job['id'], status: 'success', msg: 'Mets package successfully created!')
 rescue StandardError => e
+  @dflow_api.update_process(job_id: @job['id'], status: 'fail', msg: e.message)
   @sh.terminate(e.message)
 end
 
