@@ -11,7 +11,7 @@ module CreateMETSPackage
 
     # Return source XML data, in this case just the data from the source API
     def xml_data
-      xml = job['xml']
+      xml = @job['xml']
       xml.gsub!(/<\?xml version="1.0" encoding="utf-8"\?>/,'')
       "<gubs>#{xml}</gubs>"
     end
