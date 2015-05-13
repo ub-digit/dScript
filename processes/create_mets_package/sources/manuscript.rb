@@ -68,7 +68,7 @@ module CreateMETSPackage
     def clean_xml_traverse(docroot)
       docroot.children.each do |element|
         if element.is_a?(Nokogiri::XML::Element)
-          if element.children.blank?
+          if element.children.nil? || element.children.empty?
             element.remove
           else
             clean_xml_traverse(element)
