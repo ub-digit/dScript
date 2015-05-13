@@ -13,7 +13,7 @@ module CreateMETSPackage
     def xml_data
       @xml = @job['xml']
       2.times { clean_xml }
-      @xml.gsub!(/<\?xml version='1.0' encoding='utf-8'\?>/,'')
+      @xml.gsub!(/<\?xml version="1.0" encoding="utf-8"\?>/,'')
       return "<gubs>#{@xml}</gubs>"
     end
 
