@@ -36,7 +36,7 @@
      def list_files(source, directory, extension)
        # Returns a job to process, if any is available
        response = HTTParty.get("#{@host}/list_files", query: {
-         source: "#{source}:#{directory}",
+         source_dir: "#{source}:#{directory}",
          ext: extension,
          api_key: @api_key
          })
