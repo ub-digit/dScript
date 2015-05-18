@@ -109,7 +109,7 @@ module CreateMETSPackage
     def xml_valid?(xml)
       test = Nokogiri::XML(xml)
       pp test.errors if !test.errors.empty?
-      pp xml if !test.errors.empty?
+      #pp xml if !test.errors.empty?
       test.errors.empty?
     end
 
