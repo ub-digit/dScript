@@ -27,7 +27,7 @@ if images.valid?
   @dflow_api.update_job(job: new_job)
 
   # Update progress
-  @dflow_api.update_process(job_id: @job['id'], status: 'success', msg: 'Metadata successfully imported!')
+  @dflow_api.update_process(job_id: @job['id'], step: @job['current_flow_step'], status: 'success', msg: 'Metadata successfully imported!')
 else
-  @dflow_api.update_process(job_id: @job['id'], status: 'fail', msg: images.errors.inspect)
+  @dflow_api.update_process(job_id: @job['id'], step: @job['current_flow_step'], status: 'fail', msg: images.errors.inspect)
 end

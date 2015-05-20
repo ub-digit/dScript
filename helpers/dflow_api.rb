@@ -40,9 +40,10 @@ module DScript
    end
 
    # TODO: Needs error handling
-   def update_process(job_id:, status:, msg:)
+   def update_process(job_id:, step:, status:, msg:)
      HTTParty.get("#{@host}/api/process/#{job_id}", query: {
        process_code: @process_code,
+       step: step,
        status: status,
        msg: msg,
        api_key: @api_key
