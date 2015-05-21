@@ -13,4 +13,6 @@ config.rb
 # Ignore deploy config files
 config/deploy/*.rb
 
+# Ignore run_script file
+run_script.sh
 

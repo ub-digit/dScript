@@ -25,7 +25,7 @@ set :tmp_dir, '/home/rails/tmp'
 
 # Default value for :linked_files is []
 # set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/secrets.yml')
-set :linked_files, %w{config.rb processes/create_mets_package/config.rb}
+set :linked_files, %w{run_file.sh config.rb processes/create_mets_package/config.rb}
 # Default value for linked_dirs is []
 # set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system')
 
