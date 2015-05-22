@@ -9,9 +9,10 @@ module CreateMETSPackage
     attr_reader :mets_data
 
     # mets_data is global mets_data from CreateMETSPackage::METS
-    def initialize(job, mets_data)
+    def initialize(job, mets_data, source)
       @job = job
       @mets_data = mets_data
+      @source
     end
 
     # Return source XML data, in this case just the data from the source API
@@ -41,7 +42,7 @@ module CreateMETSPackage
       puts @job['xml']
       puts '----------------------------------------------------------------------'
       puts doc
-      doc.search("/manuscript/document/data/imagedata").map do |imagedata|
+      doc.search("/manuscript/#{source}/data/imagedata").map do |imagedata|
         pp "imagedata #{imagedata}"
         imagedata_id = imagedata.attr('hd-id').to_i
         pp imagedata_id

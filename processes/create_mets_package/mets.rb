@@ -85,9 +85,9 @@ module CreateMETSPackage
       when 'dc'
         @source = nil
       when 'document'
-        @source = Manuscript.new(@job, mets_data)
+        @source = Manuscript.new(@job, mets_data, 'document')
       when 'letter'
-        @source = Manuscript.new(@job, mets_data)
+        @source = Manuscript.new(@job, mets_data, 'letter')
       end
 
       @file_groups = []
