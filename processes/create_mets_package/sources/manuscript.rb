@@ -36,11 +36,13 @@ module CreateMETSPackage
     # Manuscripts have image groups.
     # Wrapper for all image groups
     def extra_dmdsecs
-      creation_date = mets_data[:created_at]
       doc = Nokogiri::XML(@job['xml'])
+      pp "Inne i extra_dmdsecs"
       doc.search("/manuscript/document/data/imagedata").map do |imagedata|
+        pp "imagedata #{imagedata}"
         imagedata_id = imagedata.attr('hd-id').to_i
-        extra_dmdsec("image_#{imagedata_id}", creation_date) { imagedata.to_xml }
+        pp imagedata_id
+        extra_dmdsec("image_#{imagedata_id}", imagedata.to_xml)
       end.join("\n")
     end
     
