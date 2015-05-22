@@ -2,14 +2,19 @@ require 'nokogiri'
 
 module ImportPackageMetadata
   class Image
-    attr_accessor :physical, :logical, :error, :image_num
+    attr_accessor :physical, :logical, :error, :image_num, :group_name
 
     def as_json
-      {
+      hash = {
         num: image_num,
         page_type: physical,
         page_content: logical
       }
+      if group_name && group_name != 0
+        hash[:group_name] = group_name
+      end
+
+      return hash
     end
 
     PHYSICAL = {
