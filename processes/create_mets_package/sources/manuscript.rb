@@ -38,6 +38,9 @@ module CreateMETSPackage
     def extra_dmdsecs
       doc = Nokogiri::XML(@job['xml'])
       pp "Inne i extra_dmdsecs"
+      puts @job['xml']
+      puts '----------------------------------------------------------------------'
+      puts doc
       doc.search("/manuscript/document/data/imagedata").map do |imagedata|
         pp "imagedata #{imagedata}"
         imagedata_id = imagedata.attr('hd-id').to_i
