@@ -30,12 +30,13 @@ module ImportPackageMetadata
       32 => "EmptyPage"
     }
 
-    def initialize(dfile_api:, job_id:, group_names:, image_count:, image_num:)
+    def initialize(dfile_api:, job_id:, group_names:, image_count:, image_num:, source:)
       @dfile_api = dfile_api
       @job_id = job_id
       @group_names = group_names
       @image_count = image_count
       @image_num = image_num
+      @source = source
       @error = {}
     end
 
@@ -71,8 +72,17 @@ module ImportPackageMetadata
       @physical = map_physical(physical_numeric: physical_numeric)
       @logical = map_logical(logical_numeric: logical_numeric)
       
-      validate_group_name(group_name: group_name) unless group_name == 0
+      validate_group_name(group_name: group_name) if source_requires_group_name(@source)
       @group_name = group_name
+    end
+
+    # Returns true if source requires a valid group name to be set
+    def source_requires_group_name(source)
+      if source == 'letter' || source == 'document'
+        return true
+      else
+        return false
+      end
     end
 
     # Remap physical page definition from numeric to string
@@ -172,7 +182,7 @@ module ImportPackageMetadata
     # Creates image objects for each page number
     def fetch_images
       @page_count.times do |page_num| 
-        image = Image.new(dfile_api: @dfile_api, job_id: @job['id'], group_names: @group_names, image_count: @page_count, image_num: page_num+1)
+        image = Image.new(dfile_api: @dfile_api, job_id: @job['id'], group_names: @group_names, image_count: @page_count, image_num: page_num+1, source: @job['source'])
         image.run
         @images << image
       end
