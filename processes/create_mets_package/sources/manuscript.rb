@@ -1,6 +1,11 @@
 module CreateMETSPackage
   class Manuscript
     XML_SCHEMA="http://www.ub.gu.se/handskriftsdatabasen/api/schema.xsd"
+    TYPE_OF_RECORD = {
+      "as" => "Serial",
+      "am" => "Monograph",
+      "tm" => "Manuscript"
+    }
     attr_reader :mets_data
 
     # mets_data is global mets_data from CreateMETSPackage::METS
@@ -22,10 +27,10 @@ module CreateMETSPackage
       "OTHER"
     end
 
-    # We have no readable translations for manuscript types, so just return whatever code we
-    # have available
+    # Text representation of Type of Record, or code if not available. Used in output METS XML
     def type_of_record
-      @job['metadata']['type_of_record']
+      tor = @job['metadata']['type_of_record']
+      TYPE_OF_RECORD[tor] || tor
     end
 
     # Manuscripts have image groups.
