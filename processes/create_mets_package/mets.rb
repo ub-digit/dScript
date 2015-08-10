@@ -34,7 +34,7 @@ module CreateMETSPackage
       set_full_path
     end
   end
-  
+
   # Describing a file group containing multiple or single file(s)
   # Keeps track of file type (extension), directory name within job,
   # and whether or not there should be multiple or single file entries
@@ -159,15 +159,22 @@ module CreateMETSPackage
     end
 
     # Root element wrapper for METS XML
+    ##
+    # så sva det vara:
+#<mets:mets
+#xmlns:mets="http://www.loc.gov/METS/"
+#xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+#xmlns:rights="http://www.loc.gov/rights/"
+#xmlns:xlink="http://www.w3.org/1999/xlink"
+#xsi:schemaLocation="http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd">
+#
     def root(xml)
      %Q(<mets:mets xmlns:mets="http://www.loc.gov/METS/"
        xmlns:rights="http://www.loc.gov/rights/"
        xmlns:xlink="http://www.w3.org/1999/xlink"
        xmlns:lc="http://www.loc.gov/mets/profiles"
-       xmlns:bib="http://www.loc.gov/mets/profiles/bibRecord"
        xmlns:mods="http://www.loc.gov/mods/v3"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       OBJID="loc.afc.afc9999005.1153"
        xsi:schemaLocation="http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-2.xsd">#{xml}</mets:mets>)
 end
 
@@ -290,7 +297,7 @@ end
     # METS XML structure for logical entries
     #  Wrapper for all logical structure entries
     def structure_section_logical
-      structure_data = @job['package_metadata']['images'].map do |image| 
+      structure_data = @job['package_metadata']['images'].map do |image|
         structure_image_logical(image)
       end
 
@@ -305,7 +312,7 @@ end
     #  Wrapper for all physical structure entries
     def structure_section_physical
       #pp @job['package_metadata']
-      structure_data = @job['package_metadata']['images'].map do |image| 
+      structure_data = @job['package_metadata']['images'].map do |image|
         #pp image
         structure_image_physical(image)
       end
