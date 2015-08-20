@@ -50,6 +50,13 @@ module DScript
      })
    end
 
+   # Return  a single job
+   def find_job(job_id)
+     response = HTTParty.get("#{@host}/api/jobs/#{job_id}")
+
+     return response['job']
+   end
+
    # Updates a job with new information
    def update_job(job:)
      response = HTTParty.put("#{@host}/api/jobs/#{job[:id]}", body: {job: job, api_key: @api_key})
@@ -73,6 +80,28 @@ module DScript
      
      return response["source"]
    end
+
+    # Find jobs for given parameter hash
+    def find_jobs(params:)
+      response = HTTParty.get("#{@host}/api/jobs", query: params)
+
+      return response["jobs"]  
+    end
+
+    # Create publication log item
+    def create_publication_log(params:)
+      response = HTTParty.post("#{@host}/api/publication_log", body: {publication_log: params}.merge({api_key: @api_key}))
+     
+      return response
+    end
+
+    # Find unpublished jobs
+    # PARAMS: publication_type, source, copyright
+    def find_unpublished_jobs(params:)
+      response = HTTParty.get("#{@host}/api/jobs/unpublished_jobs", query: params)
+      
+      return response['jobs']
+    end
 
 	end
 end
