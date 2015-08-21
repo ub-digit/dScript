@@ -22,11 +22,11 @@ pp jobs.count
 gupea_config = YAML.load(@dfile_api.download_file('CONFIGURATION', 'gupea_collections.yml'))
 jobs = jobs.select{|job| gupea_config.keys.include?(job['treenode_id'])}
 
-puts jobs.count
+puts "Total jobs: #{jobs.count}"
 # Identify jobs which have already been published the old way
 jobs_already_published = jobs.select{|job| job['comment'].index("GUPEA")}
 
-puts jobs_already_published.count
+puts "Jobs already published: #{jobs_already_published.count}"
 
 # Create publication logs for old jobs
 jobs_already_published.each do |job|
@@ -49,13 +49,14 @@ end
 
 # Identify jobs to be published
 jobs_to_publish = jobs - jobs_already_published
-puts jobs_to_publish.count
+puts "Jobs to publish: #{jobs_to_publish.count}"
 
 # Publish jobs
 jobs_to_publish.each do |job|
   # Fetch full job
   full_job = @dflow_api.find_job(job['id'])
-  package = GupeaPackage::Package.new(full_job, @dfile_api, gupea_config[full_job['treenode_id']])
-  package.create_xml
+  package = GupeaPackage::Package.new(full_job, @dfile_api, @dflow_api, gupea_config[full_job['treenode_id']])
   package.create_folder
+  package.import_package
+
 end

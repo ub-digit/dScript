@@ -4,9 +4,10 @@ module GupeaPackage
     require 'nokogiri'
     attr_accessor :job, :xml
 
-    def initialize(job, dfile_api, collection_id)
+    def initialize(job, dfile_api, dflow_api, collection_id)
       @job = job
       @dfile_api = dfile_api
+      @dflow_api = dflow_api
       @collection_id = collection_id #GUPEA collection id
     end
 
@@ -82,22 +83,38 @@ module GupeaPackage
           }
         }
       end
-      @xml = builder.to_xml
+      builder.to_xml
     end
 
     # Creates package folder for delivery
     def create_folder
-      if !@dfile_api.create_file(source: 'GUPEA', filename: "#{@job['id']}/collection", content: @collection_id)
-        raise StandardError
-      end
+      # Create collection file
+      @dfile_api.create_file(source: 'GUPEA', filename: "#{@job['id']}/collection", content: @collection_id)
+      
+      # Copy PDF from package
+      @dfile_api.copy_file(from_source: 'STORE', from_file: "#{package_name}/pdf/#{package_name}.pdf", to_source: 'GUPEA', to_file: "#{@job['id']}/files/#{package_name}.pdf")
 
-      if !@dfile_api.copy_file(from_source: 'STORE', from_file: "#{package_name}/pdf/#{package_name}.pdf", to_source: 'GUPEA', to_file: "#{@job['id']}/#{@job['id']}.pdf")
-        raise StandardError
-      end
+      # Create contents file
+      @dfile_api.create_file(source: 'GUPEA', filename: "#{@job['id']}/files/contents", content: "#{package_name}.pdf")
+
+      # Create DC file
+      @dfile_api.create_file(source: 'GUPEA', filename: "#{@job['id']}/files/dublin_core.xml", content: create_xml)
     end
 
     def package_name
       return sprintf('GUB%07d', @job['id'])
+    end
+
+    # Sends signal to GUPEA server to import package
+    def import_package
+      response = HTTParty.get("http://gupea.ub.gu.se:81/dflow_import/#{@job['id']}")
+    
+      if !response || response["error"] || !response["url"]
+        errors << "Error from service: #{response['error']} #{response['extra_info']}"
+      else
+        @dflow_api.create_publication_log(params:{job_id: @job['id'], created_at: DateTime.now, publication_type: 'GUPEA', comment: response['url']})
+      end
+
     end
   end
 end
