@@ -81,8 +81,8 @@
         content: content,
         api_key: @api_key
       }
-      if !permission.blank?
-        body['permission'] = permission
+      if !permission.nil?
+        body['force_permission'] = permission
       end
 
       response = HTTParty.post("#{@host}/create_file", body: body)
