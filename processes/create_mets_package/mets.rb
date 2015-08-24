@@ -1,5 +1,6 @@
 require_relative 'sources/libris'
 require_relative 'sources/manuscript'
+require_relative 'sources/dublin_core'
 require_relative 'config'
 require 'pp'
 
@@ -83,7 +84,7 @@ module CreateMETSPackage
       when 'libris'
         @source = Libris.new(@job, mets_data)
       when 'dc'
-        @source = nil
+        @source = DublinCore.new(@job, mets_data)
       when 'document'
         @source = Manuscript.new(@job, mets_data, 'document')
       when 'letter'
