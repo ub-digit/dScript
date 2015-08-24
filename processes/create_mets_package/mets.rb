@@ -171,12 +171,9 @@ module CreateMETSPackage
 #
     def root(xml)
      %Q(<mets:mets xmlns:mets="http://www.loc.gov/METS/"
-       xmlns:rights="http://www.loc.gov/rights/"
        xmlns:xlink="http://www.w3.org/1999/xlink"
-       xmlns:lc="http://www.loc.gov/mets/profiles"
-       xmlns:mods="http://www.loc.gov/mods/v3"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-2.xsd">#{xml}</mets:mets>)
+       xsi:schemaLocation="http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd">#{xml}</mets:mets>)
 end
 
     # METS XML header information

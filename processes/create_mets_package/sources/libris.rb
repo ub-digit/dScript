@@ -17,7 +17,14 @@ module CreateMETSPackage
 
     # Return source XML data, transformed according to ALVIN specifications
     def xml_data
-      "<mods>#{alvin_mods}</mods>"
+      %Q(<mods 
+      xmlns="http://www.loc.gov/mods/v3" 
+      xmlns:xlink="http://www.w3.org/1999/xlink" 
+      version="3.5" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+      xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-5.xsd">
+      #{alvin_mods}
+      </mods>)
     end
 
     # ALVIN specifies MODS as XML format
