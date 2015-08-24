@@ -81,7 +81,7 @@
         content: content,
         api_key: @api_key
       }
-      if permission.present?
+      if !permission.blank?
         body['permission'] = permission
       end
 
