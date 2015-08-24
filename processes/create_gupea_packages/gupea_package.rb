@@ -89,7 +89,7 @@ module GupeaPackage
     # Creates package folder for delivery
     def create_folder
       # Create collection file
-      @dfile_api.create_file(source: 'GUPEA', filename: "#{@job['id']}/collection", content: @collection_id)
+      @dfile_api.create_file(source: 'GUPEA', filename: "#{@job['id']}/collection", content: @collection_id, permission: "0777")
       
       # Copy PDF from package
       @dfile_api.copy_file(from_source: 'STORE', from_file: "#{package_name}/pdf/#{package_name}.pdf", to_source: 'GUPEA', to_file: "#{@job['id']}/files/#{package_name}.pdf")
@@ -110,7 +110,7 @@ module GupeaPackage
       response = HTTParty.get("http://gupea.ub.gu.se:81/dflow_import/#{@job['id']}")
     
       if !response || response["error"] || !response["url"]
-        errors << "Error from service: #{response['error']} #{response['extra_info']}"
+        puts "Error from service: #{response['error']} #{response['extra_info']}"
       else
         @dflow_api.create_publication_log(params:{job_id: @job['id'], created_at: DateTime.now, publication_type: 'GUPEA', comment: response['url']})
       end

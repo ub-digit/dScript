@@ -76,12 +76,16 @@
     end
 
     # Creates a file with given content
-    def create_file(source:, filename:, content:)
-      response = HTTParty.post("#{@host}/create_file", body: {
-        dest_file: "#{source}:#{filename}",
+    def create_file(source:, filename:, content:, permission: nil)
+      body = { dest_file: "#{source}:#{filename}",
         content: content,
         api_key: @api_key
-        })
+      }
+      if permission.present?
+        body['permission'] = permission
+      end
+
+      response = HTTParty.post("#{@host}/create_file", body: body)
 
       return response.success?
     end
