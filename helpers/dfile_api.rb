@@ -108,8 +108,8 @@ private
     def get_process_result(process_id)
 
       # Load Redis config
-      REDIS_CONFIG = YAML.load( File.open("redis.yml") ).symbolize_keys
-      @redis = Redis.new(config)
+      config = YAML.load( File.open("redis.yml") )
+      @redis = Redis.new(db: config['db'], hostname: config['hostname'])
 
       while !@redis.get("dFile:processes:#{process_id}:state:done") do
         sleep 0.1
