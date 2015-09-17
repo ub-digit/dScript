@@ -1,4 +1,5 @@
   require 'httparty'
+  require 'redis'
 
   module DScript
   	class DFileAPI
@@ -105,13 +106,16 @@
 private
     # Returns result from redis db
     def get_process_result(process_id)
-      redis = Redis.new
-      
-      while !redis.get("dFile:processes:#{process_id}:state:done") do
+
+      # Load Redis config
+      REDIS_CONFIG = YAML.load( File.open("redis.yml") ).symbolize_keys
+      @redis = Redis.new(config)
+
+      while !@redis.get("dFile:processes:#{process_id}:state:done") do
         sleep 0.1
       end
 
-      value = redis.get("dFile:processes:#{process_id}:value")
+      value = @redis.get("dFile:processes:#{process_id}:value")
       if !value
         raise StandardError, redis.get("dFile:processes:#{process_id}:error")
       end
