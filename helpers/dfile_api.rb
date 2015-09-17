@@ -72,7 +72,8 @@
         api_key: @api_key
         })
 
-      return response['checksum']
+      process_id = response['id']
+      return get_process_result(process_id)
     end
 
     # Creates a file with given content
@@ -99,6 +100,23 @@
       })
 
       return response.success?
+    end
+
+private
+    # Returns result from redis db
+    def get_process_result(process_id)
+      redis = Redis.new
+      
+      while !redis.get("dFile:processes:#{process_id}:state:done") do
+        sleep 0.1
+      end
+
+      value = redis.get("dFile:processes:#{process_id}:value")
+      if !value
+        raise StandardError, redis.get("dFile:processes:#{process_id}:error")
+      end
+
+      return value
     end
   end
 end
