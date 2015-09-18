@@ -74,7 +74,7 @@
         })
 
       if !response.success?
-        raise StandardError, "Could not start a process through dFile: #{response.error}"
+        raise StandardError, "Could not start a process through dFile: #{response['error']}"
       end
 
       process_id = response['id']
