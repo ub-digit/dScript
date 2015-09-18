@@ -73,7 +73,16 @@
         api_key: @api_key
         })
 
+      if !response.success?
+        raise StandardError, "Could not start a process through dFile: #{response.error}"
+      end
+
       process_id = response['id']
+
+      if !process_id || process_id == ''
+        raise StandardError, "Did not get a valid Process ID: #{process_id}"
+      end
+
       return get_process_result(process_id)
     end
 
