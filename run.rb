@@ -37,6 +37,7 @@ cmd = [RUBY, script_file.to_s]
 cmd += ARGV[first_argv..-1] if ARGV[first_argv]
 IO.popen(cmd).each do |subprocess|
 	 print subprocess
+   $stdout.flush
 end
 
 @sh.terminate("Script ended")
