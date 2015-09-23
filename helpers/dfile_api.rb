@@ -130,7 +130,7 @@ private
       while !@redis.get("dFile:processes:#{process_id}:state:done") do
         @helper.log("current value: #{@redis.get("dFile:processes:#{process_id}:state:done")}" )
         @helper.log("Waiting for done #{process_id}")
-        sleep 1
+        sleep 0.1
       end
 
       value = @redis.get("dFile:processes:#{process_id}:value")
