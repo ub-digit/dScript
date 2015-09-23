@@ -40,5 +40,9 @@ module CreateMETSPackage
       ""
     end
 
+    def dmdid_attribute
+      ""
+    end
+
   end
 end
