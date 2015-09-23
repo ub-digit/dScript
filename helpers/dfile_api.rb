@@ -124,7 +124,7 @@ private
 
       # Load Redis config
       config = YAML.load( File.open("redis.yml") )
-      @redis = Redis.new(db: config['db'], hostname: config['hostname'])
+      @redis = Redis.new(db: config['db'], host: config['host'])
 
       while !@redis.get("dFile:processes:#{process_id}:state:done") do
         @helper.log("Waiting for done #{process_id}")
