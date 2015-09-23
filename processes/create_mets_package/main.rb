@@ -27,7 +27,7 @@ begin
   @dflow_api.update_process(job_id: @job['id'], step: @job['current_flow_step'], status: 'success', msg: 'Mets package successfully created!')
 rescue StandardError => e
   @dflow_api.update_process(job_id: @job['id'], step: @job['current_flow_step'], status: 'fail', msg: e.message)
-  @sh.terminate(e.message + " " + e.backtrace)
+  @sh.terminate(e.message + " " + e.backtrace.inspect)
 end
 
 
