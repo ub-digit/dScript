@@ -68,22 +68,28 @@
     # TODO: Needs error handling
     # returns {:checksum, :msg}
     def checksum(source, filename)
+      @helper.log("#########  Starting checksum request for: #{source}:#{filename} #########")
       response = HTTParty.get("#{@host}/checksum", query: {
         source_file: "#{source}:#{filename}",
         api_key: @api_key
         })
 
+      @helper.log("Response from dFile: #{response.inspect}")
       if !response.success?
         raise StandardError, "Could not start a process through dFile: #{response['error']}"
       end
 
       process_id = response['id']
 
+      @helper.log("Process id: #{process_id}")
       if !process_id || process_id == ''
         raise StandardError, "Did not get a valid Process ID: #{process_id}"
       end
 
-      return get_process_result(process_id)
+      process_result = get_process_result(process_id)
+      @helper.log("Process result: #{process_result}")
+
+      return process_result
     end
 
     # Creates a file with given content
@@ -121,10 +127,13 @@ private
       @redis = Redis.new(db: config['db'], hostname: config['hostname'])
 
       while !@redis.get("dFile:processes:#{process_id}:state:done") do
-        sleep 0.1
+        @helper.log("Waiting for done #{process_id}")
+        sleep 1
       end
 
       value = @redis.get("dFile:processes:#{process_id}:value")
+
+      @helper.log("Value from Redis for #{process_id}: #{value}")
       if !value
         raise StandardError, redis.get("dFile:processes:#{process_id}:error")
       end
