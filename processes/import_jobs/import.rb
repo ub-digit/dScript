@@ -12,7 +12,14 @@ module ImportJobs
       @dflow_api = dflow_api
       @treenode_id = treenode_id
       @copyright = copyright
-      @file_data = Hash[columns.zip(row)]
+      fixed_row = row.map do |val|
+        if val.is_a? Float
+          val.to_i.to_s
+        else
+          val
+        end
+      end
+      @file_data = Hash[columns.zip(fixed_row)]
       @name = @file_data["name"]
       @catalog_id = @file_data["catalog_id"]
       @file_data.delete("name")
@@ -75,6 +82,8 @@ module ImportJobs
         end
         # Two more lines are placeholders for information about spreadsheet, and needs to be ignored
         next if i == 1 || i == 2
+        
+        next if row.compact.empty?
 
         @jobs << JobEntry.new(dflow_api: @dflow_api,
                               treenode_id: @treenode_id,
@@ -94,7 +103,7 @@ module ImportJobs
 
       # Write source data back to job entry
       @jobs.each do |job| 
-        job.job_data = @catalog_data[job.catalog_id].dup
+        job.job_data = Marshal.load(Marshal.dump(@catalog_data[job.catalog_id]))
       end
 
       # Validate jobs

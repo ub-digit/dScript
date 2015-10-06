@@ -40,7 +40,7 @@ module CreateMETSPackage
       ""
     end
 
-    def dmdid_attribute
+    def dmdid_attribute(groupname)
       ""
     end
 
