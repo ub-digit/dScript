@@ -2,7 +2,7 @@
 lock '3.4.0'
 
 set :application, 'dScript'
-set :repo_url, 'git@github.com:ub-digit/dScript.git'
+set :repo_url, 'https://github.com/ub-digit/dScript.git'
 
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
@@ -21,7 +21,7 @@ set :repo_url, 'git@github.com:ub-digit/dScript.git'
 
 # Default value for :pty is false
 # set :pty, true
-set :tmp_dir, '/home/rails/tmp'
+set :tmp_dir, '/home/apps/tmp'
 
 # Default value for :linked_files is []
 # set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/secrets.yml')

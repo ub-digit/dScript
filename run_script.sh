@@ -3,7 +3,7 @@
 PATH=$PATH:/usr/local/bin
 . /usr/local/lib/rvm
 
-DIR=/data/test/dScript/current
+DIR=/apps/dscript/current
 cd $DIR
 rvm use 2.1.5
 mkdir -p "$DIR/processes/$1/log/"

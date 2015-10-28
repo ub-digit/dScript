@@ -9,6 +9,9 @@ GEM
     capistrano-bundler (1.1.4)
       capistrano (~> 3.1)
       sshkit (~> 1.2)
+    capistrano-rvm (0.1.2)
+      capistrano (~> 3.0)
+      sshkit (~> 1.2)
     colorize (0.7.7)
     crack (0.4.2)
       safe_yaml (~> 1.0.0)
@@ -57,6 +60,7 @@ PLATFORMS
 DEPENDENCIES
   capistrano
   capistrano-bundler (~> 1.1.2)
+  capistrano-rvm
   httparty
   nokogiri
   redis
